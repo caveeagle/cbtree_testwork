@@ -105,7 +105,13 @@ var data = [
                             nodeIcons: false,						    
                             leafIcons: false,
                             autoExpand: true,
-                            branchIcons: false
+                            
+                            getTreeNodeById: function( id ) // new function to find DOM Tree node
+                            {
+                                return this._itemNodesMap[ id ][0];
+                            },
+                            branchIcons: false,
+                            
 						}, "CheckboxTree" );
 
 						tree.startup();
@@ -115,17 +121,19 @@ var data = [
 				
  				function satDeviceChanged(item, node, event)
  				{
- 				  //tree.collapseAll();
- 				  //node.collapse();
+
+ 				    /* Collapse children */
+ 				    var ROOT_ID = "Devs";
+                	dojo.when(store.getChildren(store.get(ROOT_ID)), function (children) {
+                	    children.forEach(function (child) 
+                	    { 
+                	           //console.info("Children: " + child.name);
+             				   var treeNode = tree.getTreeNodeById(child.id);
+             				   treeNode.collapse();
+                	    });
+                	});
  				    
-	dojo.when(store.getChildren(store.get("Devs")), function (children) {
-	    children.forEach(function (child) 
-	    { 
-	        console.info("Children: " + child.name);    
-	    });
-	    
-	});
- 				    
+ 				   
  				    
  				    
  			    }    		
