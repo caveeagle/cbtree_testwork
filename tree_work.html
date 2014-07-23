@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>The CheckBox Tree with non-Observable dojo/store</title>
+		<style type="text/css">
+			@import "my_claro.css";
+		</style>
+        
+		<script type="text/javascript" src="../../../dojo/dojo.js"></script>
+		<script type="text/javascript">
+		    
+			require([
+				"dojo/ready",
+				"dojo/store/Memory",					 // basic dojo/store
+				"cbtree/Tree",								 // Checkbox tree
+				"cbtree/model/TreeStoreModel",	// ObjectStoreModel
+				"cbtree/model/StoreModel-EXT"    // Load model extension  !!!!!
+				], function( ready, Memory, Tree, ObjectStoreModel) {
+						// Declare an JSON object
+
+var data = [
+		{ id: "Devs", name:"AllDevices",type:"root"},
+		
+		{   id: "MODIS", 
+		    name:"Модис (TERRA, AQUA)", 
+		    engname:"Modis (TERRA, AQUA)", 
+		    parent: "Devs",
+		    stype:"devices"},
+		
+		{   id: "TERRA", 
+		    name:"TERRA", 
+		    engname:"TERRA", 
+		    parent: "MODIS", 
+		    checked: true,
+		    stype:"sats"},
+
+		{   id: "AQUA", 
+		    name:"AQUA", 
+		    engname:"AQUA", 
+		    parent: "MODIS", 
+		    checked: true,
+		    stype:"sats"},
+
+
+		{   id: "OLI-TIRS", 
+		    name:"OLI-TIRS (Ландсат)", 
+		    engname:"OLI-TIRS (Landsat)", 
+		    parent: "Devs", 
+		    sats: "LANDSAT",
+		    devices: "OLI-TIRS", 
+		    checked: true,
+		    stype:"satdevs"},
+		
+		{   id: "KMSS-101, KMSS-102", 
+		    name:"КМСС-101, КМСС-102 (Метеор-М1)", 
+		    engname:"KMSS-101, KMSS-102 (Meteor-M1)",
+		    sats: "METEOR-M1", 
+		    devices: "KMSS-101, KMSS-102", 
+		    parent: "Devs",
+		    stype:"satdevs"},
+
+		{   id: "HRV, HRVIR", 
+		    name:"HRV, HRVIR (SPOT 2, SPOT 4)", 
+		    engname:"HRV, HRVIR (SPOT 2, SPOT 4)", 
+		    parent: "Devs",
+		    stype:"devices"},
+		    
+		{   id: "SPOT 2", 
+		    name:"SPOT 2", 
+		    engname:"SPOT 2", 
+		    parent: "HRV, HRVIR",
+		    stype:"sats"},
+		    
+		{   id: "SPOT 4", 
+		    name:"SPOT 4", 
+		    engname:"SPOT 4", 
+		    parent: "HRV, HRVIR",
+		    stype:"sats"},
+		    
+		{   id: "DEIMOS", 
+		    name:"Деймос", 
+		    engname:"DEIMOS", 
+		    parent: "Devs",
+		    stype:"satdevs"}
+		    
+	];
+                    
+					var store = new Memory( { data: data });
+					var model = new ObjectStoreModel( { store: store,
+													 query: {id: "Devs"},
+													 labelAttr: "name", /*  NAME OF PROPERTIES ! */
+													 labelType: "html",
+													 rootLabel: "ALL DEVICES",
+													 checkedRoot: true
+												 });
+                    
+					ready(function(){
+						tree = new Tree( 
+						{ 
+                            model: model, 
+                            id:"tree00",
+                            attachToForm:true,
+                            checkBoxes: true,
+                            nodeIcons: false,						    
+                            leafIcons: false,
+                            //autoExpand: true,
+                            branchIcons: false
+						}, "CheckboxTree" );
+
+						tree.startup();
+
+						tree.on( "click",satDeviceChanged);
+				}); 
+				
+ 				function satDeviceChanged(item, node, event)
+ 				{
+ 				    getSatdevicesState();
+ 			    }    		
+				
+                function getSatdevicesState()
+                {
+                      var Sats = new Array();
+                      var Devs = new Array();
+                      
+                      var collect  = document.forms["satform"].elements;
+                      var elements = Array.prototype.slice.call(collect);
+                      elements.forEach( function (element) 
+                      {
+                          if (element.type == "checkbox") 
+                          {
+                              var checkboxWidget = dijit.getEnclosingWidget( element );
+                              var chbox = checkboxWidget.item;
+                              if(chbox.checked)
+                              {
+                                    console.info("S! id="+chbox.id+" type="+chbox.stype+" sats="+chbox.sats );
+                                    
+                              }
+                          }
+                      });
+                }
+                
+       
+                 
+                 
+});
+                
+			</script>
+
+	</head>
+
+	<body>
+
+	<div class="claro">
+        
+        <form name="satform" id=satformid>
+		    <div id="CheckboxTree"></div>
+	    </form>
+		
+	</div>	
+		
+	</body>
+</html>
