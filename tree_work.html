@@ -87,7 +87,7 @@ var data = [
 	];
                     
 					var store = new Memory( { data: data });
-					var model = new ObjectStoreModel( { store: store,
+					model = new ObjectStoreModel( { store: store,
 													 query: {id: "Devs"},
 													 labelAttr: "name", /*  NAME OF PROPERTIES ! */
 													 labelType: "html",
@@ -115,10 +115,16 @@ var data = [
 				
  				function satDeviceChanged(item, node, event)
  				{
- 				  tree.collapseAll();
+ 				  //tree.collapseAll();
  				  //node.collapse();
  				    
- 				    
+	dojo.when(store.getChildren(store.get("Devs")), function (children) {
+	    children.forEach(function (child) 
+	    { 
+	        console.info("Children: " + child.name);    
+	    });
+	    
+	});
  				    
  				    
  				    
