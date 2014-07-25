@@ -110,18 +110,29 @@ var data = [
                             {
                                 return this._itemNodesMap[ id ][0];
                             },
-                            branchIcons: false,
+                            branchIcons: false
                             
 						}, "CheckboxTree" );
 
 						tree.startup();
 
-						tree.on( "click",satDeviceChanged);
+						tree.on("click",satDeviceChanged);
+						
+						tree.on("load",treeOnLoad);
 				}); 
 				
  				function satDeviceChanged(item, node, event)
  				{
-
+                   // !!!!!!!!!!!!!!!!!!!!!
+ 			    }    		
+				
+				function treeOnLoad()
+				{
+				    collapseChildrenNodes();
+			    }    
+				
+                function collapseChildrenNodes()
+                {
  				    /* Collapse children */
  				    var ROOT_ID = "Devs";
                 	dojo.when(store.getChildren(store.get(ROOT_ID)), function (children) {
@@ -132,13 +143,7 @@ var data = [
              				   treeNode.collapse();
                 	    });
                 	});
- 				    
- 				   
- 				    
- 				    
- 			    }    		
-				
-                
+                }    
        
                  
                  
